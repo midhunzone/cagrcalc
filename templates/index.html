@@ -5,28 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAGR Calculator</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+    </style>
+    <!-- Google AdSense script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6489693387325337" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5">CAGR Calculator</h1>
-        <form method="post" action="/calculate">
+        <h2 class="text-center">CAGR Calculator</h2>
+        <form id="cagr-form">
             <div class="form-group">
-                <label for="initial_value">Initial Value:</label>
-                <input type="number" class="form-control" id="initial_value" name="initial_value" required>
+                <label for="initial_amount">Initial Amount:</label>
+                <input type="number" class="form-control" id="initial_amount" required>
             </div>
             <div class="form-group">
-                <label for="final_value">Final Value:</label>
-                <input type="number" class="form-control" id="final_value" name="final_value" required>
+                <label for="cagr">CAGR (%):</label>
+                <input type="number" step="0.01" class="form-control" id="cagr" required>
             </div>
             <div class="form-group">
-                <label for="years">Number of Years:</label>
-                <input type="number" class="form-control" id="years" name="years" required>
+                <label for="period">Period:</label>
+                <input type="number" class="form-control" id="period" required>
+                <select class="form-control" id="time_unit">
+                    <option value="years">Years</option>
+                    <option value="months">Months</option>
+                </select>
             </div>
-            <button type="submit" class="btn btn-primary">Calculate CAGR</button>
+            <button type="submit" class="btn btn-primary">Calculate</button>
         </form>
-        {% if result %}
-            <h2 class="text-center mt-5">CAGR: {{ result }}%</h2>
-        {% endif %}
+        <br>
+        <div id="result"></div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#cagr-form').submit(function(event) {
+                event.preventDefault();
+                var initial_amount = $('#initial_amount').val();
+                var cagr = $('#cagr').val();
+                var period = $('#period').val();
+                var time_unit = $('#time_unit').val();
+                $.post('/calculate', { initial_amount: initial_amount, cagr: cagr, period: period, time_unit: time_unit }, function(data) {
+                    $('#result').html('<h4>The final value of the investment is: ' + data.final_value + '</h4>');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
